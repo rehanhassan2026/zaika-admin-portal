@@ -46,3 +46,4 @@ export function NotificationToast({ order, onClose, onView }) {
     </div>
   )
 }
+
