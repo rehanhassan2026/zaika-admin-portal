@@ -10,6 +10,7 @@ import {
   parseItems
 } from './services/adminOrderService'
 import { AdminNavbar } from './components/AdminNavbar'
+import { AdminLogin } from './components/AdminLogin'
 import { StatsOverview } from './components/StatsOverview'
 import { OrderFilters } from './components/OrderFilters'
 import { OrderTable } from './components/OrderTable'
@@ -43,6 +44,9 @@ function playOrderChime() {
 }
 
 export function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('zaika_admin_auth') === 'true'
+  })
   const [orders, setOrders] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -88,6 +92,8 @@ export function App() {
   }
 
   useEffect(() => {
+    if (!isAuthenticated) return
+
     loadOrders(true)
 
     // 2. Realtime subscription to Supabase `orders` table
@@ -134,7 +140,7 @@ export function App() {
       supabase.removeChannel(channel)
       clearInterval(interval)
     }
-  }, [soundEnabled])
+  }, [soundEnabled, isAuthenticated])
 
   // Handle status update
   const handleUpdateStatus = async (orderId, newStatus) => {
@@ -207,6 +213,18 @@ export function App() {
     return true
   })
 
+  // Handle Admin Logout
+  const handleLogout = () => {
+    localStorage.removeItem('zaika_admin_auth')
+    localStorage.removeItem('zaika_admin_user')
+    setIsAuthenticated(false)
+  }
+
+  // If not authenticated, show professional demo login screen
+  if (!isAuthenticated) {
+    return <AdminLogin onLoginSuccess={() => setIsAuthenticated(true)} />
+  }
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col selection:bg-amber-500 selection:text-neutral-950">
       
@@ -220,6 +238,7 @@ export function App() {
         onExportCSV={() => exportOrdersToCSV(orders)}
         isConnected={isConnected}
         ordersCount={orders.length}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}

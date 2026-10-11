@@ -8,7 +8,8 @@ import {
   PlusCircle,
   ShieldCheck,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  LogOut
 } from 'lucide-react'
 
 export function AdminNavbar({
@@ -19,7 +20,8 @@ export function AdminNavbar({
   onOpenManualOrder,
   onExportCSV,
   isConnected,
-  ordersCount = 0
+  ordersCount = 0,
+  onLogout
 }) {
   return (
     <header className="sticky top-0 z-30 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800">
@@ -100,6 +102,18 @@ export function AdminNavbar({
               <PlusCircle className="w-4 h-4" />
               <span className="hidden xs:inline">New Order</span>
             </button>
+
+            {/* Logout Button */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 hover:text-red-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                title="Sign out of Admin Dashboard"
+              >
+                <LogOut className="w-3.5 h-3.5 text-red-400" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </button>
+            )}
 
           </div>
 
